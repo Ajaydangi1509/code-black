@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero wrap">
+  <div class="eyebrow reveal">CONTACT / START HERE</div>
+  <h1 class="page-title reveal">Tell us what<br><span class="type-accent">matters to you.</span></h1>
+  <p class="page-lede reveal">A useful first conversation starts with context. Share your goals and we'll review whether there's a suitable next step.</p>
+</section>
+<section class="contact-section section-pad"><div class="wrap contact-grid"><div class="contact-aside reveal"><div class="eyebrow">A GOOD FIRST STEP / 01</div><h2>Clear scope.<br>Honest conversation.</h2><p>We will ask about your environment, objectives, timeline, and the type of support you're looking for.</p><div class="contact-warning"><span>!</span><p>Do not submit passwords, private keys, customer data, confidential vulnerability details, or other sensitive information through this public form.</p></div><div class="contact-meta"><span>RESPONSE PROCESS</span><p>Enquiries are reviewed manually. A submission is not an acceptance of an engagement or confirmation of service availability.</p></div></div>
+<form class="form-panel reveal" id="enquiryForm">
+  <div class="form-top"><span class="eyebrow">PROJECT ENQUIRY / 02</span><span class="mono">LET'S TALK</span></div>
+  <label>Your name *<input name="name" required minlength="2" maxlength="100" autocomplete="name" placeholder="Full name"></label>
+  <div class="form-two"><label>Work email *<input name="email" type="email" required autocomplete="email" placeholder="name@company.com"></label><label>Company<input name="company" maxlength="120" autocomplete="organization" placeholder="Organization"></label></div>
+  <div class="form-two"><label>Country / region *<input name="country" required minlength="2" maxlength="80" autocomplete="country-name" placeholder="Country"></label><label>Service of interest *<select name="service" required id="serviceSelect"><option value="">Choose a service</option><option>Web Application VAPT</option><option>Network Security Assessment</option><option>Vulnerability Assessment</option><option>Cybersecurity Consultation</option><option>Security Awareness Training</option><option>Not sure yet</option></select></label></div>
+  <label>What would you like help with? *<textarea name="message" required minlength="20" maxlength="3000" rows="5" placeholder="Describe your objectives at a high level. Please don't include sensitive technical details."></textarea></label>
+  <div class="honeypot" aria-hidden="true"><label>Leave blank<input name="website" tabindex="-1" autocomplete="off"></label></div>
+  <label class="check-label"><input type="checkbox" required><span>I agree to be contacted about this enquiry and have read the <a href="/privacy">privacy notice</a>.</span></label>
+  <button class="button button-light form-submit" type="submit">Send enquiry <span>↗</span></button>
+  <p class="form-message" id="enquiryMessage" aria-live="polite"></p>
+</form></div></section>
+{% endblock %}

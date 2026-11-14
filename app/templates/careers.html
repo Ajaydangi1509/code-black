@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-hero wrap">
+  <div class="eyebrow reveal">CAREERS / LEARN WITH US</div>
+  <h1 class="page-title reveal">Build your skills.<br><span class="type-accent">Do thoughtful work.</span></h1>
+  <p class="page-lede reveal">Interested in cybersecurity, Python automation, or web development? Share your details to express interest in future learning and internship opportunities.</p>
+</section>
+<section class="careers-section section-pad"><div class="wrap careers-grid"><div class="careers-copy reveal"><div class="eyebrow">AREAS OF INTEREST / 01</div><div class="role-item"><span>01</span><div><h3>Security Research Intern</h3><p>Learn security fundamentals, lab-based testing, research, and clear technical documentation.</p></div></div><div class="role-item"><span>02</span><div><h3>Web Development Intern</h3><p>Practice frontend development, accessible interfaces, and responsive design.</p></div></div><div class="role-item"><span>03</span><div><h3>Python / Automation Intern</h3><p>Build programming foundations, small utilities, tests, and automation projects.</p></div></div><div class="notice-box">This is an expression-of-interest form, not a promise of an open vacancy, paid role, selection, or employment. Any future opportunity will have its own written terms, supervision, and eligibility criteria.</div></div>
+<form class="form-panel reveal" id="applicationForm">
+  <div class="form-top"><span class="eyebrow">INTEREST FORM / 02</span><span class="mono">APPLICATION</span></div>
+  <label>Your name *<input name="name" required minlength="2" maxlength="100" placeholder="Full name"></label>
+  <label>Email address *<input name="email" type="email" required placeholder="you@example.com"></label>
+  <label>Area of interest *<select name="role" required><option value="">Select an area</option><option>Security Research Intern</option><option>Web Development Intern</option><option>Python / Automation Intern</option></select></label>
+  <label>Portfolio / GitHub URL (optional)<input name="portfolio" type="url" maxlength="300" placeholder="https://github.com/yourname"></label>
+  <label>Tell us about your learning goals *<textarea name="message" required minlength="20" maxlength="2000" rows="4" placeholder="Share your current skills, projects, and what you want to learn."></textarea></label>
+  <div class="honeypot" aria-hidden="true"><label>Leave blank<input name="website" tabindex="-1" autocomplete="off"></label></div>
+  <label class="check-label"><input type="checkbox" required><span>I agree to be contacted about this expression of interest and have read the <a href="/privacy">privacy notice</a>.</span></label>
+  <button class="button button-light form-submit" type="submit">Submit interest ↗</button>
+  <p class="form-message" id="applicationMessage" aria-live="polite"></p>
+</form></div></section>
+{% endblock %}

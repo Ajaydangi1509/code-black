@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @page { size: A4; margin: 0; }
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #090d13; 
+            color: #d1d5db; 
+            margin: 0; 
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .page { width: 100%; height: 100vh; padding: 50px; page-break-after: always; position: relative; }
+        .page:last-child { page-break-after: auto; }
+
+        h1, h2, h3 { color: #ffffff; margin-top: 0; }
+        .accent { color: #9be4df; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* --- COVER PAGE --- */
+        .cover-page { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: radial-gradient(circle at top right, #111a24 0%, #090d13 60%); }
+        .cover-logo { height: 180px; margin-bottom: 40px; filter: drop-shadow(0 0 20px rgba(155,228,223,0.3)); }
+        .cover-title { font-size: 52px; font-weight: 800; letter-spacing: 2px; margin-bottom: 10px; line-height: 1.1; }
+        .cover-subtitle { font-size: 18px; color: #9be4df; letter-spacing: 6px; text-transform: uppercase; margin-bottom: 60px; }
+        
+        .meta-box { background: rgba(13, 19, 27, 0.8); border: 1px solid #1e2a36; border-left: 4px solid #9be4df; padding: 30px; width: 70%; text-align: left; border-radius: 8px; backdrop-filter: blur(10px); }
+        .meta-row { display: flex; margin-bottom: 15px; font-size: 15px; }
+        .meta-row:last-child { margin-bottom: 0; }
+        .meta-label { width: 140px; color: #9be4df; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+        .meta-value { color: #ffffff; font-weight: 600; }
+        
+        .confidential-badge { margin-top: 80px; color: #FF4D4D; font-size: 12px; letter-spacing: 3px; font-weight: 800; border: 1px solid #FF4D4D; padding: 8px 16px; border-radius: 4px; }
+
+        /* --- EXECUTIVE SUMMARY --- */
+        .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e2a36; padding-bottom: 20px; margin-bottom: 40px; }
+        .header-bar img { height: 50px; }
+        .header-bar span { font-size: 12px; color: #667780; letter-spacing: 2px; text-transform: uppercase; }
+
+        .summary-grid { display: flex; gap: 30px; margin-bottom: 40px; }
+        .score-card { flex: 1; background: #0d131b; border: 1px solid #1e2a36; border-radius: 12px; padding: 40px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        .score-big { font-size: 110px; font-weight: 800; line-height: 1; margin-bottom: 10px; }
+        .score-label { font-size: 14px; color: #667780; letter-spacing: 2px; text-transform: uppercase; }
+
+        .stats-card { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+        .stat-box { background: #0d131b; border: 1px solid #1e2a36; border-radius: 8px; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .stat-title { font-size: 14px; color: #d1d5db; }
+        .stat-value { font-size: 24px; font-weight: 800; }
+
+        .risk-table { width: 100%; border-collapse: collapse; margin-top: 20px; border-radius: 8px; overflow: hidden; }
+        .risk-table th { background: #111a24; color: #9be4df; padding: 15px; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #1e2a36; }
+        .risk-table td { padding: 15px; border-bottom: 1px solid #1e2a36; background: #0d131b; font-size: 14px; }
+        .pill-high { background: rgba(255, 77, 77, 0.1); color: #FF4D4D; border: 1px solid #FF4D4D; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .pill-pass { background: rgba(56, 176, 0, 0.1); color: #38B000; border: 1px solid #38B000; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+
+        /* --- DETAILED FINDINGS --- */
+        .finding-card { background: #0d131b; border: 1px solid #1e2a36; border-radius: 8px; margin-bottom: 25px; overflow: hidden; }
+        .finding-header { background: #111a24; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e2a36; }
+        .finding-title { font-size: 16px; font-weight: 600; color: #ffffff; margin: 0; }
+        .finding-body { padding: 20px; }
+        .finding-section { margin-bottom: 15px; }
+        .finding-section:last-child { margin-bottom: 0; }
+        .section-title { font-size: 12px; color: #9be4df; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 800; }
+        .code-snippet { background: #000000; color: #38B000; font-family: 'JetBrains Mono', monospace; padding: 15px; border-radius: 6px; font-size: 12px; border: 1px solid #1e2a36; margin-top: 10px; white-space: pre-wrap; }
+
+        /* --- PRICING PAGE --- */
+        .pricing-grid { display: flex; gap: 30px; margin-top: 30px; }
+        .price-card { flex: 1; background: #0d131b; border: 1px solid #1e2a36; border-radius: 12px; padding: 30px; text-align: center; position: relative; }
+        .price-card.recommended { border-color: #9be4df; box-shadow: 0 0 30px rgba(155,228,223,0.05); }
+        .recommend-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #9be4df; color: #090d13; font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .price-title { font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 10px; }
+        .price-amount { font-size: 42px; font-weight: 800; color: #9be4df; margin-bottom: 20px; }
+        .price-features { list-style: none; padding: 0; margin: 0 0 30px 0; text-align: left; }
+        .price-features li { padding: 10px 0; border-bottom: 1px solid #1e2a36; font-size: 14px; display: flex; align-items: center; gap: 10px; }
+        .price-features li::before { content: "✓"; color: #38B000; font-weight: bold; }
+        .btn { display: block; width: 100%; padding: 15px; background: #9be4df; color: #090d13; text-decoration: none; font-weight: 800; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; }
+        .btn-red { background: #FF4D4D; color: #ffffff; }
+        
+        .footer { position: absolute; bottom: 30px; left: 50px; right: 50px; text-align: center; border-top: 1px solid #1e2a36; padding-top: 20px; font-size: 11px; color: #667780; }
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1: COVER -->
+    <div class="page cover-page">
+        <img src="{{ logo_path }}" class="cover-logo" alt="Logo">
+        <h1 class="cover-title">VULNERABILITY<br>ASSESSMENT REPORT</h1>
+        <div class="cover-subtitle">Confidential Security Audit</div>
+        
+        <div class="meta-box">
+            <div class="meta-row"><div class="meta-label">Target:</div><div class="meta-value mono">{{ target_url }}</div></div>
+            <div class="meta-row"><div class="meta-label">Scan Date:</div><div class="meta-value">{{ scan_date }}</div></div>
+            <div class="meta-row"><div class="meta-label">Report ID:</div><div class="meta-value mono">CB-{{ report_id }}</div></div>
+            <div class="meta-row"><div class="meta-label">Prepared By:</div><div class="meta-value">Code Black Security Team</div></div>
+        </div>
+        
+        <div class="confidential-badge">CONFIDENTIAL & PROPRIETARY</div>
+        <div class="footer">Code Black Security & Technologies • Securing the digital frontier</div>
+    </div>
+
+    <!-- PAGE 2: EXECUTIVE SUMMARY -->
+    <div class="page">
+        <div class="header-bar">
+            <img src="{{ logo_path }}" alt="Logo">
+            <span>Executive Summary / CB-{{ report_id }}</span>
+        </div>
+        
+        <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 10px;">Assessment Overview</h2>
+        <p style="color: #a0aec0; font-size: 15px; margin-bottom: 40px;">This report outlines the automated security posture of the target environment. The assessment was conducted on {{ scan_date }} to identify potential attack vectors.</p>
+
+        <div class="summary-grid">
+            <div class="score-card">
+                <div class="score-label">Security Score</div>
+                <div class="score-big" style="color: {{ score_color }}">{{ score }}<span style="font-size: 30px; color: #667780;">/100</span></div>
+                <div style="color: #FF4D4D; font-weight: 800; font-size: 12px; letter-spacing: 2px; margin-top: 10px;">ACTION REQUIRED</div>
+            </div>
+            
+            <div class="stats-card">
+                <div class="stat-box">
+                    <span class="stat-title">Encryption (HTTPS)</span>
+                    <span class="stat-value" style="color: {{ '#38B000' if https else '#FF4D4D' }}">{{ 'SECURE' if https else 'INSECURE' }}</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-title">Missing Headers</span>
+                    <span class="stat-value" style="color: {{ '#FF4D4D' if missing_headers else '#38B000' }}">{{ missing_headers|length }}</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-title">Overall Risk</span>
+                    <span class="stat-value" style="color: {{ 'HIGH' if score < 50 else 'MEDIUM' }}">{{ 'HIGH' if score < 50 else 'MEDIUM' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="font-size: 20px; margin-bottom: 15px;">Risk Matrix</h3>
+        <table class="risk-table">
+            <tr>
+                <th>Security Control</th>
+                <th>Status</th>
+                <th>Severity</th>
+            </tr>
+            <tr>
+                <td><strong>HTTPS Encryption</strong></td>
+                <td><span class="{{ 'pill-pass' if https else 'pill-high' }}">{{ 'PASS' if https else 'FAIL' }}</span></td>
+                <td>{{ 'Low' if https else 'High' }}</td>
+            </tr>
+            <tr>
+                <td><strong>Security Headers</strong></td>
+                <td><span class="{{ 'pill-high' if missing_headers else 'pill-pass' }}">{{ 'FAIL' if missing_headers else 'PASS' }}</span></td>
+                <td>{{ 'High' if missing_headers else 'Low' }}</td>
+            </tr>
+        </table>
+        <div class="footer">Code Black Security & Technologies • Confidential</div>
+    </div>
+
+    <!-- PAGE 3: FINDINGS -->
+    <div class="page">
+        <div class="header-bar">
+            <img src="{{ logo_path }}" alt="Logo">
+            <span>Technical Findings / CB-{{ report_id }}</span>
+        </div>
+        
+        <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 10px;">Vulnerability Details</h2>
+        <p style="color: #a0aec0; font-size: 15px; margin-bottom: 30px;">Detailed breakdown of identified misconfigurations.</p>
+
+        {% if not https %}
+        <div class="finding-card">
+            <div class="finding-header">
+                <h3 class="finding-title">Unencrypted Communication (No HTTPS)</h3>
+                <span class="pill-high">CRITICAL</span>
+            </div>
+            <div class="finding-body">
+                <div class="finding-section">
+                    <div class="section-title">Description</div>
+                    <p style="margin: 0;">The target website does not enforce HTTPS. Data transmitted between the user's browser and the server is sent in plain text.</p>
+                </div>
+                <div class="finding-section">
+                    <div class="section-title">Business Impact</div>
+                    <p style="margin: 0;">Attackers on the same network can intercept sensitive user data (passwords, credit cards) using Man-in-the-Middle (MitM) attacks.</p>
+                </div>
+                <div class="finding-section">
+                    <div class="section-title">Remediation</div>
+                    <div class="code-snippet"># Nginx Server Configuration
+server {
+    listen 443 ssl;
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+}</div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% for header in missing_headers %}
+        <div class="finding-card">
+            <div class="finding-header">
+                <h3 class="finding-title">Missing {{ header }} Header</h3>
+                <span class="pill-high">HIGH</span>
+            </div>
+            <div class="finding-body">
+                <div class="finding-section">
+                    <div class="section-title">Description</div>
+                    <p style="margin: 0;">The HTTP response does not include the <code class="mono">{{ header }}</code> security header.</p>
+                </div>
+                <div class="finding-section">
+                    <div class="section-title">Remediation</div>
+                    <div class="code-snippet"># Add the following to your server configuration (Nginx)
+add_header {{ header }} "secure-value";</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div class="footer">Code Black Security & Technologies • Confidential</div>
+    </div>
+
+    <!-- PAGE 4: PRICING -->
+    <div class="page">
+        <div class="header-bar">
+            <img src="{{ logo_path }}" alt="Logo">
+            <span>Action Plan / CB-{{ report_id }}</span>
+        </div>
+        
+        <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 10px;">Secure Your Business</h2>
+        <p style="color: #a0aec0; font-size: 15px; margin-bottom: 30px;">This automated scan is just the tip of the iceberg. A deep manual penetration test is required to ensure total security.</p>
+
+        <div class="pricing-grid">
+            <div class="price-card">
+                <div class="price-title">Essential VAPT</div>
+                <div class="price-amount">Rs. 5,000</div>
+                <ul class="price-features">
+                    <li>OWASP Top 10 Checks</li>
+                    <li>Manual + Automated Scan</li>
+                    <li>Detailed PDF Report</li>
+                    <li>3-4 Days Delivery</li>
+                </ul>
+                <a href="https://codeblack.in/contact" class="btn">Book Essential</a>
+            </div>
+            
+            <div class="price-card recommended">
+                <div class="recommend-badge">Recommended</div>
+                <div class="price-title">Complete Shield</div>
+                <div class="price-amount" style="color: #FF4D4D;">Rs. 8,000</div>
+                <ul class="price-features">
+                    <li>Everything in Essential</li>
+                    <li>Network & Malware Check</li>
+                    <li>Deep XSS & SQLi Testing</li>
+                    <li>1 Free Re-scan after fixes</li>
+                    <li>1 Month Basic Support</li>
+                </ul>
+                <a href="https://codeblack.in/contact" class="btn btn-red">Fix My Site</a>
+            </div>
+        </div>
+
+        <div class="footer">Generated by Code Black Security & Technologies • This is an automated scan</div>
+    </div>
+
+</body>
+</html>
