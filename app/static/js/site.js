@@ -100,7 +100,7 @@ if (scanBtn) {
         const url = scanUrlInput.value.trim();
         if (!url) return alert("Please enter a URL");
 
-        scanResult.innerHTML = "Scanning... Please wait...";
+        scanResult.innerHTML = "<span style='color: #9be4df;'>Scanning... Please wait...</span>";
         
         try {
             const response = await fetch("/api/scan", {
@@ -113,26 +113,30 @@ if (scanBtn) {
             if (res.ok) {
                 const data = res.data;
                 if (data.error) {
-                    scanResult.innerHTML = `<span style="color:red;">Error: ${data.error}</span>`;
+                    scanResult.innerHTML = `<span style="color:#FF4D4D;">Error: ${data.error}</span>`;
                 } else {
-                    // Pehle basic result dikhao
+                    // Naya Premium Result Format
                     scanResult.innerHTML = `
-                        <strong>[HTTPS]:</strong> ${data.https ? "✅ Enabled" : "❌ Not Enabled"} <br>
-                        <strong>[Missing Headers]:</strong> ${data.missing_headers.length > 0 ? "❌ " + data.missing_headers.join(", ") : "✅ All Present"} <br>
-                        <strong>[Open Ports]:</strong> ${data.open_ports.length > 0 ? data.open_ports.join(", ") : "None"}
+                        <div style="background: #0d131b; border: 1px solid #1e2a36; padding: 15px; border-radius: 6px; margin-top: 10px; width: 100%; max-width: 500px; font-family: monospace;">
+                            <div style="margin-bottom: 5px;"><strong style="color: #9be4df;">[HTTPS]:</strong> ${data.https ? "✅ Enabled" : "❌ Not Enabled"}</div>
+                            <div style="margin-bottom: 5px;"><strong style="color: #9be4df;">[Missing Headers]:</strong> ${data.missing_headers.length > 0 ? "❌ " + data.missing_headers.join(", ") : "✅ All Present"}</div>
+                            <div style="margin-bottom: 5px;"><strong style="color: #9be4df;">[Open Ports]:</strong> ${data.open_ports.length > 0 ? data.open_ports.join(", ") : "None"}</div>
+                            <div style="margin-bottom: 5px;"><strong style="color: #9be4df;">[SSL Expiry]:</strong> ${data.ssl_days_left > 0 ? data.ssl_days_left + " days left" : "Not Found"}</div>
+                            <div style="margin-bottom: 5px;"><strong style="color: #9be4df;">[DNS A Record]:</strong> ${data.dns_a !== "N/A" ? data.dns_a : "Not Found"}</div>
+                        </div>
                     `;
 
-                    // Phir PDF Download button add karo (Yahan hona chahiye!)
-                    const downloadLink = `/api/download_report?url=${encodeURIComponent(url)}&https=${data.https}&missing_headers=${data.missing_headers.join(',')}`;
+                    // UPDATE: Naye variables ke saath download link
+                    const downloadLink = `/api/download_report?url=${encodeURIComponent(url)}&https=${data.https}&missing_headers=${data.missing_headers.join(',')}&ssl_days=${data.ssl_days_left}&dns_a=${encodeURIComponent(data.dns_a)}&dns_mx=${encodeURIComponent(data.dns_mx)}`;
 
                     scanResult.innerHTML += `
-                        <br><br>
-                        <a href="${downloadLink}" target="_blank" class="button button-light" style="display: inline-block; padding: 10px 20px; text-decoration: none; font-size: 12px;">📄 Download Full PDF Report</a>
+                        <br>
+                        <a href="${downloadLink}" target="_blank" class="button button-light" style="display: inline-block; padding: 12px 20px; text-decoration: none; font-size: 14px; border-radius: 4px;">📄 Download Full PDF Report</a>
                     `;
                 }
             }
         } catch (err) {
-            scanResult.innerHTML = "<span style='color:red;'>Something went wrong! Check server.</span>";
+            scanResult.innerHTML = "<span style='color:#FF4D4D;'>Something went wrong! Check server.</span>";
         }
     });
 }
