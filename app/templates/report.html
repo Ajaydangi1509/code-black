@@ -58,7 +58,7 @@
         .pill-pass { background: rgba(56, 176, 0, 0.1); color: #38B000; border: 1px solid #38B000; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
 
         /* --- DETAILED FINDINGS --- */
-        .finding-card { background: #0d131b; border: 1px solid #1e2a36; border-radius: 8px; margin-bottom: 25px; overflow: hidden; }
+        .finding-card { background: #0d131b; border: 1px solid #1e2a36; border-radius: 8px; margin-bottom: 25px; overflow: hidden; page-break-inside: avoid; }
         .finding-header { background: #111a24; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e2a36; }
         .finding-title { font-size: 16px; font-weight: 600; color: #ffffff; margin: 0; }
         .finding-body { padding: 20px; }
@@ -153,6 +153,32 @@
                 <td>{{ 'High' if missing_headers else 'Low' }}</td>
             </tr>
         </table>
+
+        <!-- YAHAN NAYI TABLE ADD KI HAI -->
+        <h3 style="font-size: 20px; margin-top: 30px; margin-bottom: 15px;">Network & Domain Health</h3>
+        <table class="risk-table">
+            <tr>
+                <th>Feature</th>
+                <th>Value</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td><strong>SSL Certificate</strong></td>
+                <td>Expires in {{ ssl_days }} days</td>
+                <td><span class="{{ 'pill-pass' if ssl_days > 30 else 'pill-high' }}">{{ 'HEALTHY' if ssl_days > 30 else 'EXPIRING SOON' }}</span></td>
+            </tr>
+            <tr>
+                <td><strong>DNS A Record</strong></td>
+                <td class="mono">{{ dns_a }}</td>
+                <td><span class="pill-pass">ACTIVE</span></td>
+            </tr>
+            <tr>
+                <td><strong>DNS MX Record</strong></td>
+                <td class="mono">{{ dns_mx }}</td>
+                <td><span class="{{ 'pill-pass' if dns_mx != 'Not Found' and dns_mx != 'N/A' else 'pill-high' }}">{{ 'CONFIGURED' if dns_mx != 'Not Found' and dns_mx != 'N/A' else 'MISSING' }}</span></td>
+            </tr>
+        </table>
+
         <div class="footer">Code Black Security & Technologies • Confidential</div>
     </div>
 
@@ -237,7 +263,8 @@ add_header {{ header }} "secure-value";</div>
                     <li>Detailed PDF Report</li>
                     <li>3-4 Days Delivery</li>
                 </ul>
-                <a href="https://codeblack.in/contact" class="btn">Book Essential</a>
+                <!-- APNA LIVE URL YAHAN DAALO -->
+                <a href="https://code-black-lap3.onrender.com/contact" class="btn">Book Essential</a>
             </div>
             
             <div class="price-card recommended">
@@ -251,7 +278,7 @@ add_header {{ header }} "secure-value";</div>
                     <li>1 Free Re-scan after fixes</li>
                     <li>1 Month Basic Support</li>
                 </ul>
-                <a href="https://codeblack.in/contact" class="btn btn-red">Fix My Site</a>
+                <a href="https://code-black-lap3.onrender.com/contact" class="btn btn-red">Fix My Site</a>
             </div>
         </div>
 

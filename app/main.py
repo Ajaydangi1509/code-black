@@ -10,7 +10,6 @@ import random
 import base64
 from urllib.parse import urlparse
 
-# --- SYNC PLAYWRIGHT IMPORT ---
 from playwright.sync_api import sync_playwright
 
 from fastapi import FastAPI, Request, Response, Depends
@@ -19,12 +18,10 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-# --- SQLALCHEMY IMPORTS ---
 import sqlalchemy as sa
 from sqlalchemy.orm import Session
 from app.database import engine, Base, get_db
 
-# --- SCANNER IMPORT ---
 from app.scanner import run_scan
 
 ROOT = Path(__file__).resolve().parent
@@ -56,7 +53,6 @@ class Application(Base):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Tables automatically create hongi
     Base.metadata.create_all(bind=engine)
     yield
 
@@ -68,7 +64,6 @@ app = FastAPI(
 )
 app.mount("/static", StaticFiles(directory=str(ROOT / "static")), name="static")
 
-# --- RATE LIMITING ---
 RATE_BUCKETS: dict[str, list[float]] = {}
 RATE_LIMIT = 8
 RATE_WINDOW = 60
@@ -84,7 +79,6 @@ def allowed_request(request: Request) -> bool:
     RATE_BUCKETS[client_ip] = recent
     return True
 
-# --- SECURITY HEADERS ---
 @app.middleware("http")
 async def security_headers(request: Request, call_next):
     response = await call_next(request)
@@ -99,7 +93,6 @@ async def security_headers(request: Request, call_next):
     )
     return response
 
-# --- PYDANTIC MODELS ---
 class LeadPayload(BaseModel):
     name: str = Field(min_length=2, max_length=100)
     email: EmailStr
@@ -136,7 +129,6 @@ class ApplicationPayload(BaseModel):
 class ScanRequest(BaseModel):
     url: str = Field(min_length=4, max_length=250)
 
-# --- ROUTES ---
 def render_page(request: Request, page: str, title: str, description: str):
     return templates.TemplateResponse(
         request=request,
@@ -220,7 +212,6 @@ async def scan_website(payload: ScanRequest, request: Request):
     result = run_scan(url)
     return {"ok": True, "data": result}
 
-# --- HELPER FUNCTION FOR PLAYWRIGHT ---
 def generate_pdf_sync(html_content: str) -> bytes:
     with sync_playwright() as p:
         browser = p.chromium.launch()
@@ -263,8 +254,3 @@ async def download_report(url: str, https: bool, missing_headers: str, ssl_days:
     html_content = templates.get_template("report.html").render(context)
     pdf_bytes = await asyncio.to_thread(generate_pdf_sync, html_content)
     return Response(content=pdf_bytes, media_type="application/pdf", headers={"Content-Disposition": "attachment; filename=CodeBlack_Report.pdf"})
-
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.getenv("PORT", 10000))
-    uvicorn.run("app.main:app", host="0.0.0.0", port=port, reload=True)

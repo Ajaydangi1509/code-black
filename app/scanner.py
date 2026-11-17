@@ -5,21 +5,29 @@ import datetime
 import dns.resolver
 from urllib.parse import urlparse
 
-# Real Chrome browser ki tarah behave karne ke liye
+# Real Chrome browser ki tarah behave karne ke liye (WAF bypass mein help karega)
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1'
 }
 
 def check_https(url):
     try:
-        response = requests.get(url, timeout=5, allow_redirects=True, headers=HEADERS)
+        response = requests.get(url, timeout=10, allow_redirects=True, headers=HEADERS)
         is_https = response.url.startswith("https")
         return is_https, response
+    except requests.exceptions.Timeout:
+        return False, "TIMEOUT"
+    except requests.exceptions.ConnectionError:
+        return False, "CONNECTION_BLOCKED"
     except requests.exceptions.RequestException:
-        return False, None
+        return False, "ERROR"
 
 def check_headers(response):
-    if not response:
+    if not response or isinstance(response, str):
         return []
         
     headers_to_check = [
@@ -50,17 +58,14 @@ def check_ports(url):
     return open_ports
 
 def check_ssl_expiry(hostname):
-    """Check SSL Certificate Expiry Date"""
     if not hostname:
         return "Unknown", 0
-        
     try:
         context = ssl.create_default_context()
         with socket.create_connection((hostname, 443), timeout=3) as sock:
             with context.wrap_socket(sock, server_hostname=hostname) as ssock:
                 cert = ssock.getpeercert()
                 expiry_date_str = cert['notAfter']
-                # Format: 'Nov 16 12:00:00 2026 GMT'
                 expiry_date = datetime.datetime.strptime(expiry_date_str, '%b %d %H:%M:%S %Y %Z')
                 days_left = (expiry_date - datetime.datetime.utcnow()).days
                 return expiry_date.strftime('%Y-%m-%d'), days_left
@@ -68,25 +73,20 @@ def check_ssl_expiry(hostname):
         return "Not Found", 0
 
 def check_dns_records(hostname):
-    """Check A and MX records"""
     if not hostname:
         return "Unknown", "Unknown"
-    
     a_record = "Not Found"
     mx_record = "Not Found"
-    
     try:
         answers = dns.resolver.resolve(hostname, 'A')
         a_record = ", ".join([str(rdata) for rdata in answers])
     except Exception:
         pass
-        
     try:
         answers = dns.resolver.resolve(hostname, 'MX')
         mx_record = ", ".join([str(rdata.exchange) for rdata in answers])
     except Exception:
         pass
-        
     return a_record, mx_record
 
 def run_scan(url):
@@ -103,27 +103,26 @@ def run_scan(url):
     }
     
     try:
-        # 1. HTTPS & Headers
         is_https, response = check_https(url)
-        if not response:
-            result["error"] = "Website down or invalid URL."
+        
+        if isinstance(response, str):
+            if response == "TIMEOUT":
+                result["error"] = "Request timed out. The website might be blocking our scanner."
+            elif response == "CONNECTION_BLOCKED":
+                result["error"] = "Connection blocked by the website's security (WAF)."
+            else:
+                result["error"] = "Unable to connect to the website."
             return result
-            
+
         result["https"] = is_https
         result["missing_headers"] = check_headers(response)
-        
-        # 2. Ports
         result["open_ports"] = check_ports(url)
         
-        # 3. SSL & DNS (Sirf tab check karo jab hostname valid ho)
         if hostname:
             result["ssl_expiry_date"], result["ssl_days_left"] = check_ssl_expiry(hostname)
             result["dns_a"], result["dns_mx"] = check_dns_records(hostname)
             
     except Exception as e:
-        result["error"] = str(e)
+        result["error"] = f"Internal Error: {str(e)}"
         
     return result
-
-if __name__ == "__main__":
-    print(run_scan("https://google.com"))
