@@ -243,6 +243,11 @@ async def download_report(url: str, https: bool, missing_headers: str, ssl_days:
         logo_data_uri = f"data:image/png;base64,{encoded_string}"
     except FileNotFoundError:
         logo_data_uri = ""
+
+    if len(dns_a) > 60:
+        dns_a = dns_a[:60] + "... (multiple IPs)"
+    if len(dns_mx) > 60:
+        dns_mx = dns_mx[:60] + "..."
     
     context = {
         "target_url": url, "scan_date": datetime.now().strftime("%Y-%m-%d %H:%M"),

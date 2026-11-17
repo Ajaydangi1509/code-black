@@ -15,7 +15,14 @@
             line-height: 1.6;
         }
         
-        .page { width: 100%; height: 100vh; padding: 50px; page-break-after: always; position: relative; }
+        /* FIX: min-height use kiya taaki content overflow na kare */
+        .page { 
+            width: 100%; 
+            min-height: 100vh; 
+            padding: 50px 50px 80px 50px; /* Neeche 80px ki jagah footer ke liye */
+            page-break-after: always; 
+            position: relative; 
+        }
         .page:last-child { page-break-after: auto; }
 
         h1, h2, h3 { color: #ffffff; margin-top: 0; }
@@ -36,11 +43,25 @@
         
         .confidential-badge { margin-top: 80px; color: #FF4D4D; font-size: 12px; letter-spacing: 3px; font-weight: 800; border: 1px solid #FF4D4D; padding: 8px 16px; border-radius: 4px; }
 
-        /* --- EXECUTIVE SUMMARY --- */
+        /* --- HEADERS & FOOTERS --- */
         .header-bar { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e2a36; padding-bottom: 20px; margin-bottom: 40px; }
         .header-bar img { height: 50px; }
         .header-bar span { font-size: 12px; color: #667780; letter-spacing: 2px; text-transform: uppercase; }
+        
+        /* FIX: Footer ab absolute nahi hai */
+        .footer { 
+            position: absolute; 
+            bottom: 30px; 
+            left: 50px; 
+            right: 50px; 
+            text-align: center; 
+            border-top: 1px solid #1e2a36; 
+            padding-top: 20px; 
+            font-size: 11px; 
+            color: #667780; 
+        }
 
+        /* --- CARDS & TABLES --- */
         .summary-grid { display: flex; gap: 30px; margin-bottom: 40px; }
         .score-card { flex: 1; background: #0d131b; border: 1px solid #1e2a36; border-radius: 12px; padding: 40px; text-align: center; display: flex; flex-direction: column; justify-content: center; }
         .score-big { font-size: 110px; font-weight: 800; line-height: 1; margin-bottom: 10px; }
@@ -53,11 +74,10 @@
 
         .risk-table { width: 100%; border-collapse: collapse; margin-top: 20px; border-radius: 8px; overflow: hidden; }
         .risk-table th { background: #111a24; color: #9be4df; padding: 15px; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #1e2a36; }
-        .risk-table td { padding: 15px; border-bottom: 1px solid #1e2a36; background: #0d131b; font-size: 14px; }
-        .pill-high { background: rgba(255, 77, 77, 0.1); color: #FF4D4D; border: 1px solid #FF4D4D; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .pill-pass { background: rgba(56, 176, 0, 0.1); color: #38B000; border: 1px solid #38B000; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .risk-table td { padding: 15px; border-bottom: 1px solid #1e2a36; background: #0d131b; font-size: 13px; word-break: break-all; }
+        .pill-high { background: rgba(255, 77, 77, 0.1); color: #FF4D4D; border: 1px solid #FF4D4D; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap;}
+        .pill-pass { background: rgba(56, 176, 0, 0.1); color: #38B000; border: 1px solid #38B000; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap;}
 
-        /* --- DETAILED FINDINGS --- */
         .finding-card { background: #0d131b; border: 1px solid #1e2a36; border-radius: 8px; margin-bottom: 25px; overflow: hidden; page-break-inside: avoid; }
         .finding-header { background: #111a24; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e2a36; }
         .finding-title { font-size: 16px; font-weight: 600; color: #ffffff; margin: 0; }
@@ -79,8 +99,6 @@
         .price-features li::before { content: "✓"; color: #38B000; font-weight: bold; }
         .btn { display: block; width: 100%; padding: 15px; background: #9be4df; color: #090d13; text-decoration: none; font-weight: 800; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; font-size: 14px; }
         .btn-red { background: #FF4D4D; color: #ffffff; }
-        
-        .footer { position: absolute; bottom: 30px; left: 50px; right: 50px; text-align: center; border-top: 1px solid #1e2a36; padding-top: 20px; font-size: 11px; color: #667780; }
     </style>
 </head>
 <body>
@@ -99,7 +117,6 @@
         </div>
         
         <div class="confidential-badge">CONFIDENTIAL & PROPRIETARY</div>
-        <div class="footer">Code Black Security & Technologies • Securing the digital frontier</div>
     </div>
 
     <!-- PAGE 2: EXECUTIVE SUMMARY -->
@@ -135,27 +152,7 @@
             </div>
         </div>
 
-        <h3 style="font-size: 20px; margin-bottom: 15px;">Risk Matrix</h3>
-        <table class="risk-table">
-            <tr>
-                <th>Security Control</th>
-                <th>Status</th>
-                <th>Severity</th>
-            </tr>
-            <tr>
-                <td><strong>HTTPS Encryption</strong></td>
-                <td><span class="{{ 'pill-pass' if https else 'pill-high' }}">{{ 'PASS' if https else 'FAIL' }}</span></td>
-                <td>{{ 'Low' if https else 'High' }}</td>
-            </tr>
-            <tr>
-                <td><strong>Security Headers</strong></td>
-                <td><span class="{{ 'pill-high' if missing_headers else 'pill-pass' }}">{{ 'FAIL' if missing_headers else 'PASS' }}</span></td>
-                <td>{{ 'High' if missing_headers else 'Low' }}</td>
-            </tr>
-        </table>
-
-        <!-- YAHAN NAYI TABLE ADD KI HAI -->
-        <h3 style="font-size: 20px; margin-top: 30px; margin-bottom: 15px;">Network & Domain Health</h3>
+        <h3 style="font-size: 20px; margin-bottom: 15px;">Network & Domain Health</h3>
         <table class="risk-table">
             <tr>
                 <th>Feature</th>
@@ -178,11 +175,43 @@
                 <td><span class="{{ 'pill-pass' if dns_mx != 'Not Found' and dns_mx != 'N/A' else 'pill-high' }}">{{ 'CONFIGURED' if dns_mx != 'Not Found' and dns_mx != 'N/A' else 'MISSING' }}</span></td>
             </tr>
         </table>
-
         <div class="footer">Code Black Security & Technologies • Confidential</div>
     </div>
 
-    <!-- PAGE 3: FINDINGS -->
+    <!-- PAGE 3: METHODOLOGY (NEW PAGE) -->
+    <div class="page">
+        <div class="header-bar">
+            <img src="{{ logo_path }}" alt="Logo">
+            <span>Methodology / CB-{{ report_id }}</span>
+        </div>
+        
+        <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 20px;">Testing Methodology</h2>
+        <p style="color: #a0aec0; font-size: 15px; margin-bottom: 30px;">To ensure a comprehensive assessment, Code Black Security utilizes a combination of automated scanning and industry-standard frameworks.</p>
+
+        <div class="finding-card">
+            <div class="finding-body">
+                <h3 class="finding-title" style="color: #9be4df; margin-bottom: 10px;">1. Automated Vulnerability Scanning</h3>
+                <p>Our proprietary scanner interacts with your web server to analyze HTTP response headers, SSL/TLS configurations, and open network ports. This identifies low-hanging fruit that attackers commonly exploit.</p>
+            </div>
+        </div>
+
+        <div class="finding-card">
+            <div class="finding-body">
+                <h3 class="finding-title" style="color: #9be4df; margin-bottom: 10px;">2. OWASP Top 10 Alignment</h3>
+                <p>Our testing methodology is strictly aligned with the OWASP (Open Worldwide Application Security Project) Top 10. We specifically look for misconfigurations that lead to Cross-Site Scripting (XSS) and Clickjacking attacks.</p>
+            </div>
+        </div>
+
+        <div class="finding-card">
+            <div class="finding-body">
+                <h3 class="finding-title" style="color: #9be4df; margin-bottom: 10px;">3. DNS & Infrastructure Analysis</h3>
+                <p>We analyze your DNS records (A, MX, CNAME) to ensure proper routing and to identify potential email spoofing vulnerabilities. We also verify your SSL certificate to prevent Man-in-the-Middle (MitM) attacks.</p>
+            </div>
+        </div>
+        <div class="footer">Code Black Security & Technologies • Confidential</div>
+    </div>
+
+    <!-- PAGE 4: FINDINGS -->
     <div class="page">
         <div class="header-bar">
             <img src="{{ logo_path }}" alt="Logo">
@@ -190,7 +219,7 @@
         </div>
         
         <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 10px;">Vulnerability Details</h2>
-        <p style="color: #a0aec0; font-size: 15px; margin-bottom: 30px;">Detailed breakdown of identified misconfigurations.</p>
+        <p style="color: #a0aec0; font-size: 15px; margin-bottom: 30px;">Detailed breakdown of identified misconfigurations on the target environment.</p>
 
         {% if not https %}
         <div class="finding-card">
@@ -243,7 +272,41 @@ add_header {{ header }} "secure-value";</div>
         <div class="footer">Code Black Security & Technologies • Confidential</div>
     </div>
 
-    <!-- PAGE 4: PRICING -->
+    <!-- PAGE 5: BUSINESS IMPACT (NEW PAGE) -->
+    <div class="page">
+        <div class="header-bar">
+            <img src="{{ logo_path }}" alt="Logo">
+            <span>Business Impact / CB-{{ report_id }}</span>
+        </div>
+        
+        <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 20px;">Why This Matters For Your Business</h2>
+        <p style="color: #a0aec0; font-size: 15px; margin-bottom: 30px;">Cyber attacks are not just technical problems; they are direct threats to your revenue and reputation.</p>
+
+        <div class="summary-grid">
+            <div class="score-card" style="padding: 20px; text-align: left;">
+                <h3 style="color: #FF4D4D; font-size: 20px;">1. SEO & Google Penalties</h3>
+                <p style="font-size: 14px; color: #d1d5db;">Websites with missing security headers or malware are often flagged by Google. This results in a "This site is not secure" warning, causing users to bounce immediately and destroying your search rankings.</p>
+            </div>
+            <div class="score-card" style="padding: 20px; text-align: left;">
+                <h3 style="color: #FF4D4D; font-size: 20px;">2. Loss of Customer Trust</h3>
+                <p style="font-size: 14px; color: #d1d5db;">If a data breach occurs, customers lose trust in your business. Rebuilding that reputation is 10x more expensive than fixing these vulnerabilities today.</p>
+            </div>
+        </div>
+
+        <div class="summary-grid" style="margin-top: 20px;">
+            <div class="score-card" style="padding: 20px; text-align: left;">
+                <h3 style="color: #FF4D4D; font-size: 20px;">3. Regulatory Fines</h3>
+                <p style="font-size: 14px; color: #d1d5db;">With regulations like GDPR and India's DPDP Act, failing to protect user data can result in massive fines and legal action against the business owner.</p>
+            </div>
+            <div class="score-card" style="padding: 20px; text-align: left;">
+                <h3 style="color: #FF4D4D; font-size: 20px;">4. Business Downtime</h3>
+                <p style="font-size: 14px; color: #d1d5db;">If an attacker takes your website offline (DDoS attack) or defaces it, you lose revenue every minute the site is down.</p>
+            </div>
+        </div>
+        <div class="footer">Code Black Security & Technologies • Confidential</div>
+    </div>
+
+    <!-- PAGE 6: PRICING & ACTION PLAN -->
     <div class="page">
         <div class="header-bar">
             <img src="{{ logo_path }}" alt="Logo">
@@ -251,7 +314,7 @@ add_header {{ header }} "secure-value";</div>
         </div>
         
         <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 10px;">Secure Your Business</h2>
-        <p style="color: #a0aec0; font-size: 15px; margin-bottom: 30px;">This automated scan is just the tip of the iceberg. A deep manual penetration test is required to ensure total security.</p>
+        <p style="color: #a0aec0; font-size: 15px; margin-bottom: 30px;">This automated scan is just the tip of the iceberg. A deep manual penetration test is required to ensure total security against complex hackers.</p>
 
         <div class="pricing-grid">
             <div class="price-card">
@@ -263,7 +326,6 @@ add_header {{ header }} "secure-value";</div>
                     <li>Detailed PDF Report</li>
                     <li>3-4 Days Delivery</li>
                 </ul>
-                <!-- APNA LIVE URL YAHAN DAALO -->
                 <a href="https://code-black-lap3.onrender.com/contact" class="btn">Book Essential</a>
             </div>
             
@@ -281,8 +343,51 @@ add_header {{ header }} "secure-value";</div>
                 <a href="https://code-black-lap3.onrender.com/contact" class="btn btn-red">Fix My Site</a>
             </div>
         </div>
+        <div class="footer">Generated by Code Black Security & Technologies</div>
+    </div>
 
-        <div class="footer">Generated by Code Black Security & Technologies • This is an automated scan</div>
+    <!-- PAGE 7: GLOSSARY (NEW PAGE) -->
+    <div class="page">
+        <div class="header-bar">
+            <img src="{{ logo_path }}" alt="Logo">
+            <span>Glossary / CB-{{ report_id }}</span>
+        </div>
+        
+        <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 20px;">Security Glossary</h2>
+        <p style="color: #a0aec0; font-size: 15px; margin-bottom: 30px;">Understanding the technical terms used in this report.</p>
+
+        <table class="risk-table">
+            <tr>
+                <th>Term</th>
+                <th>Definition</th>
+            </tr>
+            <tr>
+                <td><strong>HTTPS</strong></td>
+                <td>Hypertext Transfer Protocol Secure. It encrypts data between the user and the website.</td>
+            </tr>
+            <tr>
+                <td><strong>XSS (Cross-Site Scripting)</strong></td>
+                <td>An attack where malicious scripts are injected into trusted websites to steal user data.</td>
+            </tr>
+            <tr>
+                <td><strong>Clickjacking</strong></td>
+                <td>A technique where a user is tricked into clicking a hidden link or button on a webpage.</td>
+            </tr>
+            <tr>
+                <td><strong>DNS (Domain Name System)</strong></td>
+                <td>The internet's phonebook. It translates human-readable domain names to IP addresses.</td>
+            </tr>
+            <tr>
+                <td><strong>SSL/TLS Certificate</strong></td>
+                <td>A digital certificate that authenticates a website's identity and enables an encrypted connection.</td>
+            </tr>
+            <tr>
+                <td><strong>Security Headers</strong></td>
+                <td>HTTP response headers that instruct the browser on how to behave securely on the website.</td>
+            </tr>
+        </table>
+
+        <div class="footer">Code Black Security & Technologies • Confidential</div>
     </div>
 
 </body>
